@@ -16,8 +16,7 @@ print(data['Age'].mean(), data['Age'].median())
 
 print(data.corr()['SibSp']['Parch'])
 
-females = data.where(cond=lambda d: d['Sex'] == 'female', other='')
-females_full_name = filter(lambda name: name != '', females['Name'])
+females_full_name = data[data.Sex == 'female']['Name']
 females_first_name = map(lambda name: [name.split('.')[1].split()[0].replace('(', '').replace(')', '')], females_full_name)
 females_name_data = pandas.DataFrame.from_records(data=females_first_name)
 
