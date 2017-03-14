@@ -35,20 +35,14 @@ print()
 scores_data = pandas.read_csv('samples/scores.csv')
 t = scores_data.true
 
-scores = ([skm.roc_auc_score(t, scores_data.score_logreg), 'logreg'],
-          [skm.roc_auc_score(t, scores_data.score_svm), 'svm'],
-          [skm.roc_auc_score(t, scores_data.score_knn), 'knn'],
-          [skm.roc_auc_score(t, scores_data.score_tree), 'tree'])
+scores = [(skm.roc_auc_score(t, scores_data[name]), name) for name in scores_data.columns[1:]]
 print_scores(scores)
 max_roc_auc, clf_name = max(scores)
 print('max:', max_roc_auc, '(' + clf_name + ')')
 
 print()
 
-precisions = ([get_max_precision(t, scores_data.score_logreg), 'logreg'],
-              [get_max_precision(t, scores_data.score_svm), 'svm'],
-              [get_max_precision(t, scores_data.score_knn), 'knn'],
-              [get_max_precision(t, scores_data.score_tree), 'tree'])
+precisions = [(get_max_precision(t, scores_data[name]), name) for name in scores_data.columns[1:]]
 print_scores(precisions)
 max_precision, clf_name = max(precisions)
 print('max:', max_precision, '(' + clf_name + ')')
