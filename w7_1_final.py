@@ -90,3 +90,17 @@ scaler = StandardScaler()
 scale_x = scaler.fit_transform(X)
 c_parameters, scores = start_logistic_regression(scale_x)
 plot_chart(np.log10(c_parameters), scores, 'log10(C)', 'mean')
+
+
+# Удаление категориальных признаков
+def remove_category_features(x_in):
+    del_list = ['{}{}_hero'.format(name, val) for val in range(1, 6) for name in ['r', 'd']]
+    del_list.append('lobby_type')
+    x = x_in.drop(del_list, axis=1)
+    return x
+
+
+x_without_category = remove_category_features(X)
+scale_x = scaler.fit_transform(x_without_category)
+c_parameters, scores = start_logistic_regression(scale_x)
+plot_chart(np.log10(c_parameters), scores, 'log10(C)', 'mean')
