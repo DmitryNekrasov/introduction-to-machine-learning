@@ -86,10 +86,14 @@ def start_logistic_regression(x_in):
 
     return powers, means
 
+
 scaler = StandardScaler()
 scale_x = scaler.fit_transform(X)
 c_parameters, scores = start_logistic_regression(scale_x)
 plot_chart(np.log10(c_parameters), scores, 'log10(C)', 'mean')
+max_score, best_c = max(zip(scores, c_parameters))
+print('Best C =', best_c)
+print('Max Score =', max_score)
 
 
 # Удаление категориальных признаков
@@ -104,3 +108,6 @@ x_without_category = remove_category_features(X)
 scale_x = scaler.fit_transform(x_without_category)
 c_parameters, scores = start_logistic_regression(scale_x)
 plot_chart(np.log10(c_parameters), scores, 'log10(C)', 'mean')
+max_score, best_c = max(zip(scores, c_parameters))
+print('Best C =', best_c)
+print('Max Score =', max_score)
