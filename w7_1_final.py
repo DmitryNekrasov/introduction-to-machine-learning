@@ -15,7 +15,7 @@ data_size = len(data)
 pass_result = reversed(sorted(map(lambda nc: (1 - nc[0] / data_size, nc[1]),
                                   filter(lambda nc: nc[0] < data_size,
                                          [(data[col_name].count(), col_name) for col_name in data.columns]))))
-# print('\n'.join(map(lambda nc: nc[1] + ': ' + str(round(nc[0], 3)), pass_result)))
+print('\n'.join(map(lambda nc: nc[1] + ': ' + str(round(nc[0], 3)), pass_result)))
 
 # Удаление признаков, связанных с итогами матча. Разделение данных на признаки и целевую переменную
 X = data.drop(
@@ -59,8 +59,8 @@ def start_gradient_boosting(x_in):
 
     return est_nums, means
 
-# nums, scores = start_gradient_boosting(X)
-# plot_chart(nums, scores, 'estimators_number', 'mean')
+nums, scores = start_gradient_boosting(X)
+plot_chart(nums, scores, 'estimators_number', 'mean')
 
 
 # Подход 2: логистическая регрессия
@@ -113,4 +113,21 @@ print('Best C =', best_c)
 print('Max Score =', max_score)
 
 heroes = pandas.read_csv('samples/heroes.csv')
-print('Heroes number =', len(heroes))
+n_heroes = len(heroes)
+print('Heroes number =', n_heroes)
+
+# Формирование мешка слов по героям
+X_pick = np.zeros((data.shape[0], n_heroes))
+for i, match_id in enumerate(data.index):
+    for p in range(5):
+        X_pick[i, data.ix[match_id, 'r%d_hero' % (p+1)]-1] = 1
+        X_pick[i, data.ix[match_id, 'd%d_hero' % (p+1)]-1] = -1
+bow_data = pandas.DataFrame(X_pick, index=data.index)
+
+final_x = pandas.concat([x_without_category, bow_data], axis=1)
+scale_x = scaler.fit_transform(final_x)
+c_parameters, scores = start_logistic_regression(scale_x)
+plot_chart(np.log10(c_parameters), scores, 'log10(C)', 'mean')
+max_score, best_c = max(zip(scores, c_parameters))
+print('Best C =', best_c)
+print('Max Score =', max_score)
