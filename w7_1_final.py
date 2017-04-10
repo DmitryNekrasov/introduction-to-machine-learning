@@ -40,6 +40,6 @@ for estimators_number in est_nums:
     print('time =', datetime.datetime.now() - start_time)
 
 plt.plot(est_nums, means)
-plt.xlabel('')
+plt.xlabel('estimators_number')
 plt.ylabel('mean')
 plt.show()
