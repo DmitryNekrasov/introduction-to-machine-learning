@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
+from sklearn.preprocessing import StandardScaler
 
 data = pandas.read_csv('samples/features.csv', index_col='match_id')
 data_size = len(data)
@@ -24,10 +25,11 @@ y = data.radiant_win
 # Замена пропусков на нули
 X = X.fillna(0)
 
+cv = KFold(n_splits=5, shuffle=True, random_state=241)
+
 
 # Подход 1: градиентный бустинг "в лоб"
 def start_gradient_boosting():
-    cv = KFold(n_splits=5, shuffle=True, random_state=241)
     est_nums = [10, 20, 30, 50, 100, 250]
     means = []
     for estimators_number in est_nums:
@@ -46,4 +48,13 @@ def start_gradient_boosting():
     plt.ylabel('mean')
     plt.show()
 
-start_gradient_boosting()
+# start_gradient_boosting()
+
+
+# Подход 2: логистическая регрессия
+def start_logistic_regression():
+    scaler = StandardScaler()
+    scale_x = scaler.fit_transform(X)
+    print(scale_x)
+
+start_logistic_regression()
