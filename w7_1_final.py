@@ -120,18 +120,40 @@ heroes = pandas.read_csv('samples/heroes.csv')
 n_heroes = len(heroes)
 print('Heroes number =', n_heroes)
 
-# Формирование мешка слов по героям
-X_pick = np.zeros((data.shape[0], n_heroes))
-for i, match_id in enumerate(data.index):
-    for p in range(5):
-        X_pick[i, data.ix[match_id, 'r%d_hero' % (p+1)]-1] = 1
-        X_pick[i, data.ix[match_id, 'd%d_hero' % (p+1)]-1] = -1
-bow_data = pandas.DataFrame(X_pick, index=data.index)
 
-final_x = pandas.concat([x_without_category, bow_data], axis=1)
+# Формирование мешка слов по героям
+def get_bow_data(in_data):
+    x_pick = np.zeros((in_data.shape[0], n_heroes))
+    for i, match_id in enumerate(in_data.index):
+        for p in range(5):
+            x_pick[i, in_data.ix[match_id, 'r%d_hero' % (p+1)]-1] = 1
+            x_pick[i, in_data.ix[match_id, 'd%d_hero' % (p+1)]-1] = -1
+    bow_data = pandas.DataFrame(x_pick, index=in_data.index)
+    return bow_data
+
+bow_train_data = get_bow_data(data)
+final_x = pandas.concat([x_without_category, bow_train_data], axis=1)
 scale_x = scaler.fit_transform(final_x)
 c_parameters, scores = start_logistic_regression(scale_x)
 plot_chart(np.log10(c_parameters), scores, 'log10(C)', 'mean')
 max_score, best_c = max(zip(scores, c_parameters))
 print('Best C =', best_c)
 print('Max Score =', max_score)
+
+# Подготовка тестовых данных
+x_test = pandas.read_csv('samples/features_test.csv', index_col='match_id')
+x_test = x_test.fillna(0)
+bow_test_data = get_bow_data(x_test)
+x_test_without_category = remove_category_features(x_test)
+final_x_test = pandas.concat([x_test_without_category, bow_test_data], axis=1)
+scale_x_test = scaler.fit_transform(final_x_test)
+
+# Проверка модели на тестовых данных
+model = LogisticRegression(C=best_c, random_state=241, n_jobs=-1)
+model.fit(scale_x, y)
+y_test = model.predict_proba(scale_x_test)
+p = list(map(lambda v: max(v), y_test))
+max_p = max(p)
+min_p = min(p)
+print('max p =', max_p)
+print('min p =', min_p)
