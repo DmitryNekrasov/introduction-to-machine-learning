@@ -111,3 +111,6 @@ plot_chart(np.log10(c_parameters), scores, 'log10(C)', 'mean')
 max_score, best_c = max(zip(scores, c_parameters))
 print('Best C =', best_c)
 print('Max Score =', max_score)
+
+heroes = pandas.read_csv('samples/heroes.csv')
+print('Heroes number =', len(heroes))
