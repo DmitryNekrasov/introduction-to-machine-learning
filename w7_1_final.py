@@ -61,6 +61,9 @@ def start_gradient_boosting(x_in):
 
 nums, scores = start_gradient_boosting(X)
 plot_chart(nums, scores, 'estimators_number', 'mean')
+max_score, best_num = max(zip(scores, nums))
+print('Best num =', best_num)
+print('Max Score =', max_score)
 
 
 # Подход 2: логистическая регрессия
@@ -112,6 +115,7 @@ max_score, best_c = max(zip(scores, c_parameters))
 print('Best C =', best_c)
 print('Max Score =', max_score)
 
+# Вычисление кол-ва героев в игре
 heroes = pandas.read_csv('samples/heroes.csv')
 n_heroes = len(heroes)
 print('Heroes number =', n_heroes)
