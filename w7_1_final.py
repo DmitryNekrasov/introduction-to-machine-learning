@@ -24,22 +24,26 @@ y = data.radiant_win
 # Замена пропусков на нули
 X = X.fillna(0)
 
-# Подход 1: градиентный бустинг "в лоб"
-cv = KFold(n_splits=5, shuffle=True, random_state=241)
-est_nums = [10, 20, 30, 50, 100, 250]
-means = []
-for estimators_number in est_nums:
-    print('\nestimators_number =', estimators_number)
-    clf = GradientBoostingClassifier(n_estimators=estimators_number, random_state=241)
-    start_time = datetime.datetime.now()
-    score = cross_val_score(clf, X, y, cv=cv, scoring='roc_auc', n_jobs=-1)
-    mean = np.mean(score)
-    means.append(mean)
-    print('score =', score)
-    print('mean =', mean)
-    print('time =', datetime.datetime.now() - start_time)
 
-plt.plot(est_nums, means)
-plt.xlabel('estimators_number')
-plt.ylabel('mean')
-plt.show()
+# Подход 1: градиентный бустинг "в лоб"
+def start_gradient_boosting():
+    cv = KFold(n_splits=5, shuffle=True, random_state=241)
+    est_nums = [10, 20, 30, 50, 100, 250]
+    means = []
+    for estimators_number in est_nums:
+        print('\nestimators_number =', estimators_number)
+        clf = GradientBoostingClassifier(n_estimators=estimators_number, random_state=241)
+        start_time = datetime.datetime.now()
+        score = cross_val_score(clf, X, y, cv=cv, scoring='roc_auc', n_jobs=-1)
+        mean = np.mean(score)
+        means.append(mean)
+        print('score =', score)
+        print('mean =', mean)
+        print('time =', datetime.datetime.now() - start_time)
+
+    plt.plot(est_nums, means)
+    plt.xlabel('estimators_number')
+    plt.ylabel('mean')
+    plt.show()
+
+start_gradient_boosting()
