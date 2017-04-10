@@ -71,10 +71,10 @@ def start_logistic_regression(x_in):
     for c in powers:
         print('\nC =', c)
 
-        clf = LogisticRegression(C=c, random_state=241, n_jobs=1)
+        clf = LogisticRegression(C=c, random_state=241, n_jobs=-1)
 
         start_time = datetime.datetime.now()
-        score = cross_val_score(clf, x_in, y, cv=cv, scoring='roc_auc', n_jobs=1)
+        score = cross_val_score(clf, x_in, y, cv=cv, scoring='roc_auc', n_jobs=-1)
         finish_time = datetime.datetime.now() - start_time
 
         mean = np.mean(score)
